@@ -1,0 +1,51 @@
+Name: travel
+Host: 0.0.0.0
+Port: 1003
+
+
+#Monitoring
+Prometheus:
+  Host: 0.0.0.0
+  Port: 4005
+  Path: /metrics
+
+#Link Tracking
+Telemetry:
+  Name: travel-api
+  Endpoint: http://127.0.0.1:14268/api/traces
+  Sampler: 1.0
+  Batcher: jaeger
+
+Log:
+  ServiceName: travel-api
+  Level: error
+
+#WxMiniConf
+WxMiniConf:
+  AppId:
+  Secret:
+
+Redis:
+  Host: 127.0.0.1:6379
+  Key: rpc:travel
+  Type: node
+  Pass: "000000"
+
+
+UserCenterRpc:
+  Endpoints:
+    - 127.0.0.1:2001
+  NonBlock: true
+
+TravelRpc:
+  Endpoints:
+    - 127.0.0.1:2003
+  NonBlock: true
+
+
+
+DB:
+  DataSource: root:000000@tcp(127.0.0.1:3306)/trytry?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+Cache:
+  - Host: 127.0.0.1:6379
+    Pass: "000000"
