@@ -2,26 +2,25 @@ kind: pipeline
 type: docker
 name: default
 
-clone:
-  disable: true
-
 workspace:
   path: /go/trytry
 
-steps:
+clone:
+  disable: true
 
+steps:
   - name: clone
     image: alpine/git
-    volumes:
-      - name: gopath
-        path: /go
     commands:
-      - cd ../
-      - git chttps://github.com/LL-LeLouch/trytry.git
+      - pwd
+      - git clone https://github.com/LL-LeLouch/trytry.git .
+      - ls
 
   - name: build
     image: lyumikael/gomodd:v1.0.0
     commands:
+      - pwd
+      - ls
       - go mod tidy
       - modd
 
@@ -32,4 +31,3 @@ volumes:
 trigger:
   branch:
     - main
-
