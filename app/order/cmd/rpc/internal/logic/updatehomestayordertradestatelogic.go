@@ -48,7 +48,12 @@ func (l *UpdateHomestayOrderTradeStateLogic) UpdateHomestayOrderTradeState(in *p
 		return nil, errors.WithMessagef(err, " , in : %+v", in)
 	}
 
-	//3、通知user
+	//修改状态
+	homestayOrder.TradeState = in.TradeState
+	if err := l.svcCtx.HomestayOrderModel.UpdateWithVersion(l.ctx, nil, homestayOrder); err != nil {
+		return nil, errors.Wrapf(xerr.NewErrMsg("ERROR Failed to update homestay order status"), "Failed to update homestay order status db UpdateWithVersion err:%v , in : %v", err, in)
+	}
+	//4、通知user
 	if in.TradeState == model.HomestayOrderTradeStateWaitUse {
 		payload, err := json.Marshal(jobtype.PaySuccessNotifyUserPayload{
 			Order: homestayOrder,

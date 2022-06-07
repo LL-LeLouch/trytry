@@ -34,29 +34,23 @@ func (l *CloseHomestayOrderHandler) ProcessTask(ctx context.Context, t *asynq.Ta
 		return errors.Wrapf(ErrCloseOrderFal, "ERROR closeHomestayOrderStateMqHandler payload err:%v, payLoad:%+v", err, t.Payload())
 	}
 
-	fmt.Println(p.Sn)
-
 	resp, err := l.svcCtx.OrderRpc.HomestayOrderDetail(ctx, &order.HomestayOrderDetailReq{
 		Sn: p.Sn,
 	})
-
-	fmt.Println()
-	fmt.Println(err)
-	fmt.Println()
 
 	if err != nil || resp.HomestayOrder == nil {
 		return errors.Wrapf(ErrCloseOrderFal, "ERROR closeHomestayOrderStateMqHandler  get order fail or order no exists err:%v, sn:%s ,HomestayOrder : %+v", err, p.Sn, resp.HomestayOrder)
 	}
 	//更改订单状态
 	if resp.HomestayOrder.TradeState == model.HomestayOrderTradeStateWaitPay {
-		_, err := l.svcCtx.OrderRpc.UpdateHomestayOrderTradeState(ctx, &order.UpdateHomestayOrderTradeStateReq{
+		resp, err := l.svcCtx.OrderRpc.UpdateHomestayOrderTradeState(ctx, &order.UpdateHomestayOrderTradeStateReq{
 			Sn:         p.Sn,
 			TradeState: model.HomestayOrderTradeStateCancel,
 		})
+		fmt.Println(resp)
 		if err != nil {
 			return errors.Wrapf(ErrCloseOrderFal, "ERROR CloseHomestayOrderHandler close order fail  err:%v, sn:%s ", err, p.Sn)
 		}
 	}
-
 	return nil
 }

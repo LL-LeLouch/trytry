@@ -33,7 +33,7 @@ WxMiniConf:
 #rpc service.
 OrderRpcConf:
   Endpoints:
-    - 127.0.0.1:2003
+    - 127.0.0.1:2004
   NonBlock: true
 
 UsercenterRpcConf:
