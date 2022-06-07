@@ -38,7 +38,7 @@ func (l *UserHomestayOrderDetailLogic) UserHomestayOrderDetail(req *types.UserHo
 		Sn: req.Sn,
 	})
 	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrMsg("get homestay order detail fail"), " rpc get HomestayOrderDetail err:%v , sn : %s", err, req.Sn)
+		return nil, errors.Wrapf(xerr.NewErrMsg("get homestay order detail fail"), "ERROR rpc get HomestayOrderDetail err:%v , sn : %s", err, req.Sn)
 	}
 	var tyOrderDetail types.UserHomestayOrderDetailResp
 	if userId == resp.HomestayOrder.UserId {

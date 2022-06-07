@@ -39,7 +39,7 @@ func (l *UserHomestayOrderListLogic) UserHomestayOrderList(req *types.UserHomest
 		TraderState: req.TradeState,
 	})
 	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrMsg("Failed to get user homestay order list"), "Failed to get user homestay order list err : %v ,req:%+v", err, req)
+		return nil, errors.Wrapf(xerr.NewErrMsg("Failed to get user homestay order list"), "ERROR rpc Failed to get user homestay order list err : %v ,req:%+v", err, req)
 	}
 
 	var tyHomestayOrderList []types.UserHomestayOrderListView

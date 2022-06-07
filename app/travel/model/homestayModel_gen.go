@@ -43,25 +43,25 @@ type (
 	}
 
 	Homestay struct {
-		Id                  int64     `pb:"id"`
-		CreateTime          time.Time `pb:"create_time"`
-		UpdateTime          time.Time `pb:"update_time"`
-		DeleteTime          time.Time `pb:"delete_time"`
-		DelState            int64     `pb:"del_state"`
-		Version             int64     `pb:"version"`               // 版本号
-		Title               string    `pb:"title"`                 // 标题
-		SubTitle            string    `pb:"sub_title"`             // 副标题
-		Banner              string    `pb:"banner"`                // 轮播图，第一张封面
-		Info                string    `pb:"info"`                  // 介绍
-		PeopleNum           int64     `pb:"people_num"`            // 容纳人的数量
-		HomestayBusinessId  int64     `pb:"homestay_business_id"`  // 民宿店铺id
-		UserId              int64     `pb:"user_id"`               // 房东id，冗余字段
-		RowState            int64     `pb:"row_state"`             // 0:下架 1:上架
-		RowType             int64     `pb:"row_type"`              // 售卖类型0：按房间出售 1:按人次出售
-		FoodInfo            string    `pb:"food_info"`             // 餐食标准
-		FoodPrice           int64     `pb:"food_price"`            // 餐食价格（分）
-		HomestayPrice       int64     `pb:"homestay_price"`        // 民宿价格（分）
-		MarketHomestayPrice int64     `pb:"market_homestay_price"` // 民宿市场价格（分）
+		Id                  int64     `db:"id"`
+		CreateTime          time.Time `db:"create_time"`
+		UpdateTime          time.Time `db:"update_time"`
+		DeleteTime          time.Time `db:"delete_time"`
+		DelState            int64     `db:"del_state"`
+		Version             int64     `db:"version"`               // 版本号
+		Title               string    `db:"title"`                 // 标题
+		SubTitle            string    `db:"sub_title"`             // 副标题
+		Banner              string    `db:"banner"`                // 轮播图，第一张封面
+		Info                string    `db:"info"`                  // 介绍
+		PeopleNum           int64     `db:"people_num"`            // 容纳人的数量
+		HomestayBusinessId  int64     `db:"homestay_business_id"`  // 民宿店铺id
+		UserId              int64     `db:"user_id"`               // 房东id，冗余字段
+		RowState            int64     `db:"row_state"`             // 0:下架 1:上架
+		RowType             int64     `db:"row_type"`              // 售卖类型0：按房间出售 1:按人次出售
+		FoodInfo            string    `db:"food_info"`             // 餐食标准
+		FoodPrice           int64     `db:"food_price"`            // 餐食价格（分）
+		HomestayPrice       int64     `db:"homestay_price"`        // 民宿价格（分）
+		MarketHomestayPrice int64     `db:"market_homestay_price"` // 民宿市场价格（分）
 	}
 )
 

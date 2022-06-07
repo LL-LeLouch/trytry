@@ -21,4 +21,4 @@ passwd=000000
 
 echo "开始创建库：$dbname 的表：$2"
 goctl model mysql datasource -url="${username}:${passwd}@tcp(${host}:${port})/${dbname}" -table="${tables}"  -dir="${modeldir}" -cache=true --style=goZero
-goctl model mysql datasource -url="root:000000@tcp(127.0.0.1:3306)/trytry" -table="payment"  -dir="." -cache=true --style=goZero
+goctl model mysql datasource -url="root:000000@tcp(127.0.0.1:3306)/trytry" -table=""  -dir="." -cache=true --style=goZero

@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
+	"trytry/app/order/model"
 	"trytry/common/xerr"
 
 	"trytry/app/order/cmd/rpc/internal/svc"
@@ -28,17 +29,18 @@ func NewHomestayOrderDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext
 
 // HomestayOrderDetail 民宿订单详情
 func (l *HomestayOrderDetailLogic) HomestayOrderDetail(in *pb.HomestayOrderDetailReq) (*pb.HomestayOrderDetailResp, error) {
-	homeOrder, err := l.svcCtx.HomestayOrderModel.FindOneBySn(l.ctx, in.Sn)
-	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "HomestayOrderModel  FindOneBySn pb err : %v , sn : %s", err, in.Sn)
+	homestayOrder, err := l.svcCtx.HomestayOrderModel.FindOneBySn(l.ctx, in.Sn)
+	if err != nil && err != model.ErrNotFound {
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "HomestayOrderModel  FindOneBySn db err : %v , sn : %s", err, in.Sn)
 	}
-	var resp pb.HomestayOrder
-	if homeOrder != nil {
-		copier.Copy(&resp, homeOrder)
 
-		resp.CreateTime = homeOrder.CreateTime.Unix()
-		resp.LiveStartDate = homeOrder.LiveStartDate.Unix()
-		resp.LiveEndDate = homeOrder.LiveEndDate.Unix()
+	var resp pb.HomestayOrder
+	if homestayOrder != nil {
+		_ = copier.Copy(&resp, homestayOrder)
+
+		resp.CreateTime = homestayOrder.CreateTime.Unix()
+		resp.LiveStartDate = homestayOrder.LiveStartDate.Unix()
+		resp.LiveEndDate = homestayOrder.LiveEndDate.Unix()
 
 	}
 

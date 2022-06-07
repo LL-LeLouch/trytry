@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/hibiken/asynq"
 	"github.com/pkg/errors"
 	"trytry/app/mqueue/cmd/job/internal/svc"
@@ -14,7 +15,7 @@ import (
 
 var ErrCloseOrderFal = xerr.NewErrMsg("close order fail")
 
-// Close Homestay Order Handler close no pay homestay Order
+// CloseHomestayOrderHandler 关闭没有支付的订单
 type CloseHomestayOrderHandler struct {
 	svcCtx *svc.ServiceContext
 }
@@ -25,28 +26,35 @@ func NewCloseHomestayOrderHandler(svcCtx *svc.ServiceContext) *CloseHomestayOrde
 	}
 }
 
-// defer  close no pay homestayOrder  : if return err != nil , asynq will retry
+// ProcessTask   : if return err != nil , asynq will retry
 func (l *CloseHomestayOrderHandler) ProcessTask(ctx context.Context, t *asynq.Task) error {
 
 	var p jobtype.DeferCloseHomestayOrderPayload
 	if err := json.Unmarshal(t.Payload(), &p); err != nil {
-		return errors.Wrapf(ErrCloseOrderFal, "closeHomestayOrderStateMqHandler payload err:%v, payLoad:%+v", err, t.Payload())
+		return errors.Wrapf(ErrCloseOrderFal, "ERROR closeHomestayOrderStateMqHandler payload err:%v, payLoad:%+v", err, t.Payload())
 	}
+
+	fmt.Println(p.Sn)
 
 	resp, err := l.svcCtx.OrderRpc.HomestayOrderDetail(ctx, &order.HomestayOrderDetailReq{
 		Sn: p.Sn,
 	})
-	if err != nil || resp.HomestayOrder == nil {
-		return errors.Wrapf(ErrCloseOrderFal, "closeHomestayOrderStateMqHandler  get order fail or order no exists err:%v, sn:%s ,HomestayOrder : %+v", err, p.Sn, resp.HomestayOrder)
-	}
 
+	fmt.Println()
+	fmt.Println(err)
+	fmt.Println()
+
+	if err != nil || resp.HomestayOrder == nil {
+		return errors.Wrapf(ErrCloseOrderFal, "ERROR closeHomestayOrderStateMqHandler  get order fail or order no exists err:%v, sn:%s ,HomestayOrder : %+v", err, p.Sn, resp.HomestayOrder)
+	}
+	//更改订单状态
 	if resp.HomestayOrder.TradeState == model.HomestayOrderTradeStateWaitPay {
 		_, err := l.svcCtx.OrderRpc.UpdateHomestayOrderTradeState(ctx, &order.UpdateHomestayOrderTradeStateReq{
 			Sn:         p.Sn,
 			TradeState: model.HomestayOrderTradeStateCancel,
 		})
 		if err != nil {
-			return errors.Wrapf(ErrCloseOrderFal, "CloseHomestayOrderHandler close order fail  err:%v, sn:%s ", err, p.Sn)
+			return errors.Wrapf(ErrCloseOrderFal, "ERROR CloseHomestayOrderHandler close order fail  err:%v, sn:%s ", err, p.Sn)
 		}
 	}
 

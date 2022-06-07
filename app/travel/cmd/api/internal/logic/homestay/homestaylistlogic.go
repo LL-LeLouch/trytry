@@ -2,7 +2,6 @@ package homestay
 
 import (
 	"context"
-	"fmt"
 	"github.com/Masterminds/squirrel"
 	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
@@ -39,7 +38,7 @@ func (l *HomestayListLogic) HomestayList(req *types.HomestayListReq) (*types.Hom
 	})
 	homestayActivityList, err := l.svcCtx.HomestayActivityModel.FindPageListByPage(l.ctx, whereBuilder, req.Page, req.PageSize, "data_id desc")
 	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "get activity homestay id set fail rowType: %s ,err : %v", model.HomestayActivityPreferredType, err)
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "ERROR get activity homestay id set fail rowType: %s ,err : %v", model.HomestayActivityPreferredType, err)
 	}
 
 	var resp []types.Homestay
@@ -53,10 +52,8 @@ func (l *HomestayListLogic) HomestayList(req *types.HomestayListReq) (*types.Hom
 
 			homestay, err := l.svcCtx.HomestayModel.FindOne(l.ctx, id)
 
-			fmt.Println(homestay)
-
 			if err != nil && err != model.ErrNotFound {
-				logx.WithContext(l.ctx).Errorf("ActivityHomestayListLogic ActivityHomestayList 获取活动数据失败 id : %d ,err : %v", id, err)
+				logx.WithContext(l.ctx).Errorf("ERROR HomestayListLogic ActivityHomestayList 获取活动数据失败 id : %d ,err : %v", id, err)
 				return
 			}
 			writer.Write(homestay)

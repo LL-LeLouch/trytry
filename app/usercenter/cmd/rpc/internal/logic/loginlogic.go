@@ -40,13 +40,13 @@ func (l *LoginLogic) Login(in *pb.LoginReq) (*usercenter.LoginResp, error) {
 	if err != nil {
 		return nil, err
 	}
-	//2、Generate the token, so that the service doesn't call rpc internally
+	//2、生成token 不用rpc调用
 	generateTokenLogic := NewGenerateTokenLogic(l.ctx, l.svcCtx)
 	tokenResp, err := generateTokenLogic.GenerateToken(&usercenter.GenerateTokenReq{
 		UserId: userId,
 	})
 	if err != nil {
-		return nil, errors.Wrapf(ErrGenerateTokenError, "GenerateToken userId : %d", userId)
+		return nil, errors.Wrapf(ErrGenerateTokenError, "ERROR GenerateToken userId : %d", userId)
 	}
 
 	return &usercenter.LoginResp{
@@ -59,8 +59,8 @@ func (l *LoginLogic) Login(in *pb.LoginReq) (*usercenter.LoginResp, error) {
 func (l *LoginLogic) loginByMobile(mobile, password string) (int64, error) {
 
 	user, err := l.svcCtx.UserModel.FindOneByPhone(l.ctx, mobile)
-	if err != nil {
-		return 0, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "根据手机号查询用户信息失败，mobile:%s,err:%v", mobile, err)
+	if err != nil && err != model.ErrNotFound {
+		return 0, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "ERROR 根据手机号查询用户信息失败，mobile:%s,err:%v", mobile, err)
 	}
 	if user == nil {
 		return 0, errors.Wrapf(ErrUserNoExistsError, "mobile:%s", mobile)
@@ -72,5 +72,6 @@ func (l *LoginLogic) loginByMobile(mobile, password string) (int64, error) {
 }
 
 func (l *LoginLogic) loginByMiniWx() error {
+	//待定
 	return nil
 }

@@ -27,7 +27,7 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(req *types.RegisterReq) (*types.RegisterResp, error) {
-	//邮箱验证
+	//验证
 	if res, _ := l.svcCtx.RedisClient.Get(req.Phone); req.Captcha != res {
 		return nil, errors.Wrapf(nil, "验证码错误")
 	}
@@ -39,7 +39,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (*types.RegisterResp, e
 		AuthType: model.UserAuthTypeSystem,
 	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "req: %+v", req)
+		return nil, errors.Wrapf(err, "UsercenterRpc.Register err req: %+v", req)
 	}
 	var resp types.RegisterResp
 	_ = copier.Copy(&resp, registerResp)

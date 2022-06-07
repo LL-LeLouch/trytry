@@ -46,7 +46,7 @@ func (l *CreateHomestayOrderLogic) CreateHomestayOrder(in *pb.CreateHomestayOrde
 	resp, err := l.svcCtx.TravelRpc.HomestayDetail(l.ctx, &travel.HomestayDetailReq{
 		Id: in.HomestayId,
 	})
-	if err != nil {
+	if err != nil && err != model.ErrNotFound {
 		return nil, errors.Wrapf(xerr.NewErrMsg("Failed to query the record"), "Failed to query the record  rpc HomestayDetail fail , homestayId : %d , err : %v", in.HomestayId, err)
 	}
 	if resp.Homestay == nil {
@@ -98,11 +98,11 @@ func (l *CreateHomestayOrderLogic) CreateHomestayOrder(in *pb.CreateHomestayOrde
 	//订单任务延迟关闭
 	payload, err := json.Marshal(jobtype.DeferCloseHomestayOrderPayload{Sn: order.Sn})
 	if err != nil {
-		logx.WithContext(l.ctx).Errorf("create defer close order task json Marshal Failed err :%+v , sn : %s", err, order.Sn)
+		logx.WithContext(l.ctx).Errorf("ERROR create defer close order task json Marshal Failed err :%+v , sn : %s", err, order.Sn)
 	} else {
 		_, err = l.svcCtx.AsynqClient.Enqueue(asynq.NewTask(jobtype.DeferCloseHomestayOrder, payload), asynq.ProcessIn(CloseOrderTimeMinutes*time.Minute))
 		if err != nil {
-			logx.WithContext(l.ctx).Errorf("create defer close order task insert queue fail err :%+v , sn : %s", err, order.Sn)
+			logx.WithContext(l.ctx).Errorf("ERROR create defer close order task insert queue fail err :%+v , sn : %s", err, order.Sn)
 		}
 	}
 

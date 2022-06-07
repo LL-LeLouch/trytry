@@ -45,13 +45,13 @@ func (l *WxAuthLogic) WxAuth(req *types.WXMiniAuthReq) (*types.WXMiniAuthResp, e
 	if err != nil || authResult.ErrCode != 0 || authResult.OpenID == "" {
 		return nil, errors.Wrapf(ErrWxMiniAuthFailError, "发起授权请求失败 err : %v , code : %s  , authResult : %+v", err, req.Code, authResult)
 	}
-	//2、Parsing WeChat-Mini return data
+	//2、解析 WeChat-Mini 返回的信息
 	userData, err := miniprogram.GetEncryptor().Decrypt(authResult.SessionKey, req.EncryptedData, req.IV)
 	if err != nil {
 		return nil, errors.Wrapf(ErrWxMiniAuthFailError, "解析数据失败 req : %+v , err: %v , authResult:%+v ", req, err, authResult)
 	}
 
-	//3、bind user or login.
+	//3、绑定用户或者创建用户
 	var userId int64
 	rpcRsp, err := l.svcCtx.UsercenterRpc.GetUserAuthByAuthKey(l.ctx, &usercenter.GetUserAuthByAuthKeyReq{
 		AuthType: usercenterModel.UserAuthTypeSmallWX,
@@ -65,7 +65,7 @@ func (l *WxAuthLogic) WxAuth(req *types.WXMiniAuthReq) (*types.WXMiniAuthResp, e
 
 		//Wechat-Mini Decrypted data
 		Phone := userData.PhoneNumber
-		nickName := fmt.Sprintf("TryTry%s", Phone[7:])
+		nickName := fmt.Sprintf("TryTry%s", Phone[7:]) //防止昵称有重复无法注册
 		registerRsp, err := l.svcCtx.UsercenterRpc.Register(l.ctx, &usercenter.RegisterReq{
 			AuthKey:  authResult.OpenID,
 			AuthType: usercenterModel.UserAuthTypeSmallWX,

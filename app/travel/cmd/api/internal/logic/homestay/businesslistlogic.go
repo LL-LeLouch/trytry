@@ -35,7 +35,7 @@ func (l *BusinessListLogic) BusinessList(req *types.BusinessListReq) (*types.Bus
 	})
 	list, err := l.svcCtx.HomestayModel.FindPageListByIdDESC(l.ctx, whereBuilder, req.LastId, req.PageSize)
 	if err != nil && err != model.ErrNotFound {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "HomestayBusinessId: %d ,err %v", req.HomestayBusinessId, err)
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "ERROR  FindPageListByIdDESC HomestayBusinessId: %d ,err %v", req.HomestayBusinessId, err)
 	}
 
 	var resp []types.Homestay

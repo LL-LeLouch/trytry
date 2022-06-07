@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-
 	"trytry/app/verification/cmd/api/internal/config"
 	"trytry/app/verification/cmd/api/internal/handler"
 	"trytry/app/verification/cmd/api/internal/svc"

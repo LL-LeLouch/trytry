@@ -19,12 +19,13 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+	conn := sqlx.NewMysql(c.DB.DataSource)
 	return &ServiceContext{
 		Config:      c,
 		AsynqClient: newAsynqClient(c),
 
 		TravelRpc: travel.NewTravel(zrpc.MustNewClient(c.TravelRpcConf)),
 
-		HomestayOrderModel: model.NewHomestayOrderModel(sqlx.NewMysql(c.DB.DataSource), c.Cache),
+		HomestayOrderModel: model.NewHomestayOrderModel(conn, c.Cache),
 	}
 }

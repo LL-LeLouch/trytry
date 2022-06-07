@@ -18,5 +18,4 @@ func KqMqs(c config.Config, ctx context.Context, svcContext *svc.ServiceContext)
 		kq.MustNewQueue(c.PaymentUpdateStatusConf, kqMq.NewPaymentUpdateStatusMq(ctx, svcContext)),
 		//.....
 	}
-
 }

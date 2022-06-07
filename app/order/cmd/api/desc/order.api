@@ -33,3 +33,5 @@ service order {
 	@handler userHomestayOrderDetail
 	post /homestayOrder/userHomestayOrderDetail (UserHomestayOrderDetailReq) returns (UserHomestayOrderDetailResp)
 }
+
+

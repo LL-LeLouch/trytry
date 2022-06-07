@@ -39,7 +39,7 @@ func (l *PaySuccessNotifyUserHandler) ProcessTask(ctx context.Context, t *asynq.
 
 	var p jobtype.PaySuccessNotifyUserPayload
 	if err := json.Unmarshal(t.Payload(), &p); err != nil {
-		return errors.Wrapf(ErrPaySuccessNotifyFail, "PaySuccessNotifyUserHandler payload err:%v, payLoad:%+v", err, t.Payload())
+		return errors.Wrapf(ErrPaySuccessNotifyFail, "ERROR PaySuccessNotifyUserHandler payload err:%v, payLoad:%+v", err, t.Payload())
 	}
 
 	// 1、get user openid
@@ -48,10 +48,10 @@ func (l *PaySuccessNotifyUserHandler) ProcessTask(ctx context.Context, t *asynq.
 		AuthType: usercenterModel.UserAuthTypeSmallWX,
 	})
 	if err != nil {
-		return errors.Wrapf(ErrPaySuccessNotifyFail, "pay success notify user fail, rpc get user err:%v , orderSn:%s , userId:%d", err, p.Order.Sn, p.Order.UserId)
+		return errors.Wrapf(ErrPaySuccessNotifyFail, "ERROR pay success notify user fail, rpc get user err:%v , orderSn:%s , userId:%d", err, p.Order.Sn, p.Order.UserId)
 	}
 	if usercenterResp.UserAuth == nil || len(usercenterResp.UserAuth.AuthKey) == 0 {
-		return errors.Wrapf(ErrPaySuccessNotifyFail, "pay success notify user , user no exists err:%v , orderSn:%s , userId:%d", err, p.Order.Sn, p.Order.UserId)
+		return errors.Wrapf(ErrPaySuccessNotifyFail, "ERROR pay success notify user , user no exists err:%v , orderSn:%s , userId:%d", err, p.Order.Sn, p.Order.UserId)
 	}
 	openId := usercenterResp.UserAuth.AuthKey
 

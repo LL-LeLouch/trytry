@@ -26,7 +26,7 @@ func NewHomestayDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ho
 	}
 }
 
-func (l *HomestayDetailLogic) HomestayDetail(req *types.HomestayDetailReq) (resp *types.HomestayDetailResp, err error) {
+func (l *HomestayDetailLogic) HomestayDetail(req *types.HomestayDetailReq) (*types.HomestayDetailResp, error) {
 	homestayResp, err := l.svcCtx.TraceClient.HomestayDetail(l.ctx, &travel.HomestayDetailReq{
 		Id: req.Id,
 	})
@@ -42,5 +42,7 @@ func (l *HomestayDetailLogic) HomestayDetail(req *types.HomestayDetailReq) (resp
 		tyHomestay.MarketHomestayPrice = tool.Fen2Yuan(homestayResp.Homestay.MarketHomestayPrice)
 	}
 
-	return
+	return &types.HomestayDetailResp{
+		Homestay: tyHomestay,
+	}, nil
 }

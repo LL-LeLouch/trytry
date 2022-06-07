@@ -5,6 +5,7 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
 	"trytry/app/usercenter/cmd/rpc/usercenter"
+	"trytry/app/usercenter/model"
 	"trytry/common/xerr"
 
 	"trytry/app/usercenter/cmd/rpc/internal/svc"
@@ -32,8 +33,8 @@ func NewGetUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 func (l *GetUserInfoLogic) GetUserInfo(in *pb.GetUserInfoReq) (*pb.GetUserInfoResp, error) {
 
 	user, err := l.svcCtx.UserModel.FindOne(l.ctx, in.Uid)
-	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "GetUserInfo find user pb field, id:%d , err:%v", in.Uid, err)
+	if err != nil && err != model.ErrNotFound {
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "ERROR GetUserInfo find user pb field, id:%d , err:%v", in.Uid, err)
 	}
 	if user == nil {
 		return nil, errors.Wrapf(ErrUserNoExistsError, "id: %d", in.Uid)
